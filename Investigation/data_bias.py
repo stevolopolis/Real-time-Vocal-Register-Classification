@@ -32,8 +32,10 @@ class StatisticsCounter():
         self.n_falsetto = 0
         self.n_whistle = 0
         self.n_controversial = 0
+        self.sum = 0
 
         for file in os.listdir(self.data_path):
+            self.sum += 1
             str_ls = file.split('_')
             if str_ls[-2] == 'chest':
                 self.n_chest += 1
@@ -52,12 +54,15 @@ class StatisticsCounter():
                 self.n_falsetto, self.n_whistle, self.n_controversial]
 
     def show_n_registers(self):
-        print('Statisitics:\n'
+        print('\nStatisitics for total number of registers...\n'
                 'Chest: %s\n'
                 'Mixed: %s\n'
                 'Head: %s\n'
                 'Falsetto: %s\n'
                 'Whistle: %s\n'
-                'Controversial: %s'
-                % (self.n_chest, self.n_mix, self.n_head, self.n_falsetto, self.n_whistle, self.n_controversial))
+                'Controversial: %s\n'
+                'Total: %s'
+                % (self.n_chest, self.n_mix, self.n_head,
+                self.n_falsetto, self.n_whistle, self.n_controversial,
+                self.sum))
         
