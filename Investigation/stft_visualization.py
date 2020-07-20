@@ -13,29 +13,28 @@ def show_stft(stft, file_name):
     plt.close()
 
 
-def combine_stft(data_path, register='chest', len=5):
-    n = 0
-    for file in os.listdir(data_path):
-        if n >= len:
-            break
-        str_ls = file.split('_')
-        if str_ls[-2] == register:
-            print(file)
-            n += 1
-            if n == 1:
-                prev_stft = pickle.load(open(os.path.join(data_path, file), 'rb'))
+class StftVisual():
+    def __init__(self, data_path, len=5):
+        self.data_path = data_path
+        self.len = len
+
+    def combine_stft(self, register='chest'):
+        n = 0
+        for file in os.listdir(self.data_path):
+            if n >= self.len:
+                break
+            str_ls = file.split('_')
+            if str_ls[-2] == register:
+                print(file)
+                n += 1
+                if n == 1:
+                    self.prev_stft = pickle.load(open(os.path.join(self.data_path, file), 'rb'))
+                else:
+                    stft = pickle.load(open(os.path.join(self.data_path, file), 'rb'))
+                    self.prev_stft = np.concatenate((self.prev_stft, stft), axis=1)
             else:
-                stft = pickle.load(open(os.path.join(data_path, file), 'rb'))
-                prev_stft = np.concatenate((prev_stft, stft), axis=1)
-        else:
-            continue
+                continue
+    
+    def plot(self, file_name):
+        show_stft(self.prev_stft, file_name)
 
-    return prev_stft
-
-
-data_path = 'D:/AI Project Group/VOCREG/DATA/Labelled_data/STFT_Jul20'
-registers = ['chest', 'mixed', 'head', 'falsetto', 'whistle', 'controversial']
-
-for reg in registers:
-    stft = combine_stft(data_path, register=reg, len=10)
-    show_stft(stft, reg)
